@@ -1,10 +1,11 @@
-# [Project name]
+# Hermes Console
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Hermes Console is a local-first control plane for launching, connecting, configuring, and monitoring AI services from one Docker-style portal.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/hermes-console run dev` — run the web console
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -22,23 +23,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/hermes-console/src/App.tsx` — console routes, service views, connection inspector, and settings
+- `artifacts/hermes-console/src/index.css` — Hermes Console visual tokens and responsive styles
+- `artifacts/api-server/src/routes/control-plane.ts` — control-plane API state model and lifecycle endpoints
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract for overview, services, logs, and connections
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first slice uses a host-adapter-shaped API contract so a Docker Engine/socket implementation can replace the seeded control-plane state without changing the UI.
+- Service lifecycle actions are modeled as explicit start/stop/restart commands rather than arbitrary shell execution.
+- The web console uses generated React Query hooks from the shared OpenAPI contract.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Live overview of host telemetry and managed service health
+- Service catalog with lifecycle controls and configuration
+- Recent service logs
+- Connection topology between runners, coding tools, automation, interfaces, and orchestration
+- Settings surface for local adapter and Docker defaults
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+The user wants the product to make local AI services easy to run, configure, monitor, and interlink from one portal, with a simple command-driven path such as `localAI -opencode`.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Re-run `pnpm --filter @workspace/api-spec run codegen` after changing `lib/api-spec/openapi.yaml`.
+- The API server currently exposes a seeded control-plane model; host-level Docker process control is the next adapter boundary.
 
 ## Pointers
 
